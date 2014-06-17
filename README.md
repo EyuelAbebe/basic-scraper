@@ -1,4 +1,4 @@
-**Basic-scraper for craigslsit**
+**Basic-scraper for craigslist**
 ================================
 
 - Scrape appartment listings.
