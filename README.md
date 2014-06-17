@@ -1,4 +1,4 @@
-basic-scraper
-=============
+**Basic-scraper for craigslsit**
+================================
 
-Basic web scraper
+- Scrape appartment listings.
