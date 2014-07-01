@@ -1,0 +1,6 @@
+beautifulsoup4==4.3.2
+py==1.4.20
+pytest==2.5.2
+requests==2.3.0
+requirements==0.1
+wsgiref==0.1.2
