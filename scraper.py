@@ -22,20 +22,25 @@ def fetch_search_results(
     return resp.content, resp.encoding
 
 
+def fetch_json_search_results(param):
+    base = 'http://seattle.craigslist.org/search/apa'
+    resp = requests.get(base, params=param)
+    resp.raise_for_status
+    return resp.json()
+
+
 def parse_source(html, encoding='utf-8'):
     parsed = BeautifulSoup(html, from_encoding=encoding)
     return parsed
 
 
 def extract_listings(parsed):
-    location_attrs = {'data-latitude': True, 'data-longitude' : True}
-    listings = parsed.find_all('p', class_='row', attrs=location_attrs)
+    listings = parsed.find_all('p', class_='row')
     for listing in listings:
-        location = {key: listing.attrs.get(key, '') for key in location_attrs}
         link = listing.find('span', class_='pl').find('a')
         price_span = listing.find('span', class_='price')
         this_listing = {
-            'location': location, 'link': link.attrs['href'],
+            'pid': listing.attrs.get('data-pid', ''),
             'description': link.string.strip(),
             'price': price_span.string.strip(),
             'size': price_span.next_sibling.strip(' \n-/')}
@@ -58,7 +63,7 @@ def add_address(listing):
         'latlng': latlng_tmpl.format(**loc),
     }
     resp = requests.get(api_url, params=parameters)
-    resp.raise_for_status() # <- this is a no-op if all is well
+    resp.raise_for_status()
     data = json.loads(resp.text)
     if data['status'] == 'OK':
         best = data['results'][0]
@@ -77,6 +82,7 @@ if __name__ == '__main__':
             minAsk=500, maxAsk=1000, bedrooms=2
         )
     doc = parse_source(html, encoding)
+    json_resp = fetch_json_search_results(minAsk=500, maxAsk=100, bedrooms=2    )
     for listing in extract_listings(doc):
         listing = add_address(listing)
         pprint.pprint(listing)

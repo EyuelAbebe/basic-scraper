@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture(scope="session")
 def scrape_craigslist():
     from scraper import fetch_search_results
-    body, encoding = fetch_search_results('Near downtown seattle', 1500,2500,2)
+    body, encoding = fetch_search_results('Near downtown seattle', 1500, 2500, 2)
 
     return body, encoding
 
